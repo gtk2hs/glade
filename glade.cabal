@@ -24,6 +24,37 @@ x-Types-Forward: *Graphics.UI.GtkInternals
 x-Types-Destructor: objectUnrefFromMainloop
 Extra-Source-Files: Gtk2HsSetup.hs
 
+Data-Dir:		demo
+Data-Files:		calc/calc.glade
+                calc/Calc.hs
+                calc/CalcModel.hs
+                calc/Makefile
+                
+                glade/GladeTest.hs
+                glade/Makefile
+                glade/simple.glade
+                
+                noughty/Cross.png
+                noughty/License
+                noughty/Makefile
+                noughty/Nought.png
+                noughty/noughty.glade
+                noughty/NoughtyGlade.hs
+                noughty/Noughty.hs
+                
+                profileviewer/Makefile
+                profileviewer/ParseProfile.hs
+                profileviewer/ProfileViewer.glade
+                profileviewer/ProfileViewer.gladep
+                profileviewer/ProfileViewer.hs
+                
+                scaling/London_Eye.jpg
+                scaling/Makefile
+                scaling/Mountains.jpg
+                scaling/scaling.glade
+                scaling/Scaling.hs
+                scaling/Stones.jpg
+
 Source-Repository head
   type:         darcs
   location:     http://code.haskell.org/gtk2hs/
