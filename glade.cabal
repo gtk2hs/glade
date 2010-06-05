@@ -59,8 +59,7 @@ Data-Files:		calc/calc.glade
 
 Source-Repository head
   type:         darcs
-  location:     http://code.haskell.org/gtk2hs/
-  subdir:       glade
+  location:     http://code.haskell.org/glade/
 
 Library
         build-depends:  base >= 4 && < 5, array, containers, haskell98, mtl,
