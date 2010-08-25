@@ -20,10 +20,10 @@ import Data.Ord
 import Control.Monad ( when, unless, liftM )
 import Control.Monad.Trans ( liftIO )
 import Control.Monad.ST
-import Data.Array.Base ( unsafeWrite, unsafeRead ) 
+import Data.Array.Base ( unsafeWrite, unsafeRead )
 import Graphics.UI.Gtk
 import Graphics.UI.Gtk.Glade
-import Graphics.UI.Gtk.ModelView as New 
+import Graphics.UI.Gtk.ModelView as New
 import Graphics.UI.Gtk.Gdk.GC (gcNew)
 import CPUTime
 import System.Environment ( getArgs )
@@ -39,7 +39,7 @@ data State = State {
   is :: ImageState
 }
 
-      
+
 main = do
   args <- getArgs
   case args of
@@ -48,8 +48,8 @@ main = do
       if exists then runGUI fName else
         putStrLn ("File "++fName++" not found.")
     _ -> putStrLn "Usage: scaling <image.jpg>"
-    
-runGUI fName = do 
+
+runGUI fName = do
   initGUI
 
   window <- windowNew
@@ -59,19 +59,19 @@ runGUI fName = do
   label <- labelNew (Just "Content Aware Image Scaling")
   vboxOuter <- vBoxNew False 0
   vboxInner <- vBoxNew False 5
-  
+
   (mb,miOpen,miSave,miScale, miGradient, miSeamCarve, miQuit) <- makeMenuBar
   canvas <- drawingAreaNew
   containerAdd vboxInner canvas
-  
-  
+
+
   -- Assemble the bits
   set vboxOuter [ containerChild := mb
                 , containerChild := vboxInner ]
   set vboxInner [ containerChild := label
                 , containerBorderWidth := 10 ]
   set window [ containerChild := vboxOuter ]
- 
+
   -- create the Pixbuf
   pb <- pixbufNew ColorspaceRgb False 8 256 256
   -- Initialize the state
@@ -79,7 +79,7 @@ runGUI fName = do
   let modifyState f = readIORef state >>= f >>= writeIORef state
 
   canvas `onSizeRequest` return (Requisition 256 256)
-  
+
 
   -- Add action handlers
   onActivateLeaf miQuit mainQuit
@@ -91,7 +91,7 @@ runGUI fName = do
   onActivateLeaf miSeamCarve $ modifyState $ seamCarveImageDlg canvas window
 
   modifyState (loadImage canvas window fName)
-  
+
   canvas `on` exposeEvent $ updateCanvas state
   boxPackStartDefaults vboxInner canvas
   widgetShowAll window
@@ -102,7 +102,7 @@ runGUI fName = do
  --uncomment for ghc < 6.8.3
 --instance Show Rectangle where
 --  show (Rectangle x y w h) = "x="++show x++", y="++show y++
---			     ", w="++show w++", h="++show h++";"
+--                           ", w="++show w++", h="++show h++";"
 
 updateCanvas :: IORef State -> EventM EExpose Bool
 updateCanvas rstate = do
@@ -148,9 +148,9 @@ doFromToStep from to step action =
              | otherwise = do action n
                               loop (n+step)
    in loop from
-   
+
 --forM = flip mapM
-   
+
 makeMenuBar = do
   mb <- menuBarNew
   fileMenu <- menuNew
@@ -189,7 +189,7 @@ loadImage canvas window filename (State pb is) = do
 --	updateCanvas canvas pxb
   return (State pxb NonEmpty)
 
-  
+
 saveImageDlg canvas window (State pb is) = do
   putStrLn ("saveImage")
   ret <- openFileDialog window
@@ -201,7 +201,7 @@ saveImageDlg canvas window (State pb is) = do
 
 scaleImageDlg canvas window (State pb is) = do
   putStrLn ("scaleImage")
-  
+
   origWidth  <- pixbufGetWidth pb
   origHeight <- pixbufGetHeight pb
   ret <- scaleDialog window origWidth origHeight
@@ -220,7 +220,7 @@ scaleImageDlg canvas window (State pb is) = do
   case ret of
     Nothing -> return (State pb NonEmpty)
     Just (w,h) -> (update w h)
-	
+
 gradientImageDlg canvas window (State pb is) = do
   putStrLn ("gradientImageDlg")
   --scalePixbuf :: Pixbuf -> Int -> Int -> IO Pixbuf
@@ -231,7 +231,7 @@ gradientImageDlg canvas window (State pb is) = do
   widgetQueueDraw canvas
 --	updateCanvas canvas pxb
   return (State pxb NonEmpty)
-	
+
 seamCarveImageDlg canvas window (State pb is) = do
   origWidth  <- pixbufGetWidth pb
   origHeight <- pixbufGetHeight pb
@@ -256,17 +256,17 @@ seamCarveImageDlg canvas window (State pb is) = do
     Nothing -> return (State pb NonEmpty)
     Just (w,h,grdCnt) -> (update w h grdCnt)
 
-	
+
 scaleDialog :: Window -> Int -> Int-> IO (Maybe (Int, Int))
 scaleDialog parent width height = do
 
-  Just xml <- xmlNew "scaling.glade" 
+  Just xml <- xmlNew "scaling.glade"
 
   dia <- xmlGetWidget xml castToDialog "dialogScale"
   dialogAddButton dia stockCancel  ResponseCancel
   dialogAddButton dia stockOk ResponseOk
-  entryWidth <- xmlGetWidget xml castToEntry "entryScalingWidth" 
-  entryHeight <- xmlGetWidget xml castToEntry "entryScalingHeight" 
+  entryWidth <- xmlGetWidget xml castToEntry "entryScalingWidth"
+  entryHeight <- xmlGetWidget xml castToEntry "entryScalingHeight"
   entrySetText entryWidth (show width)
   entrySetText entryHeight (show height)
   res <- dialogRun dia
@@ -281,14 +281,14 @@ scaleDialog parent width height = do
 seamCarveDialog :: Window -> Int -> Int -> Int -> IO (Maybe (Int, Int, Int))
 seamCarveDialog parent width height grdCnt= do
 
-  Just xml <- xmlNew "scaling.glade" 
+  Just xml <- xmlNew "scaling.glade"
 
   dia <- xmlGetWidget xml castToDialog "dialogSeamCarve"
   dialogAddButton dia stockCancel  ResponseCancel
   dialogAddButton dia stockOk ResponseOk
-  entryWidth <- xmlGetWidget xml castToEntry "entryWidth" 
-  entryHeight <- xmlGetWidget xml castToEntry "entryHeight" 
-  entryGrdCnt <- xmlGetWidget xml castToEntry "entryGrdCnt" 
+  entryWidth <- xmlGetWidget xml castToEntry "entryWidth"
+  entryHeight <- xmlGetWidget xml castToEntry "entryHeight"
+  entryGrdCnt <- xmlGetWidget xml castToEntry "entryGrdCnt"
   entrySetText entryWidth (show width)
   entrySetText entryHeight (show height)
   entrySetText entryGrdCnt (show grdCnt)
@@ -302,15 +302,15 @@ seamCarveDialog parent width height grdCnt= do
     ResponseOk -> return (Just (read widthStr,read heightStr, read grdCntStr))
     _ -> return Nothing
 
-      
+
 openFileDialog :: Window -> IO (Maybe String)
 openFileDialog parentWindow = do
   dialog <- fileChooserDialogNew
               (Just "Open Profile... ")
               (Just parentWindow)
-	      FileChooserActionOpen
-	      [("gtk-cancel", ResponseCancel)
-	      ,("gtk-open", ResponseAccept)]
+              FileChooserActionOpen
+              [("gtk-cancel", ResponseCancel)
+              ,("gtk-open", ResponseAccept)]
   widgetShow dialog
   response <- dialogRun dialog
   widgetHide dialog
@@ -331,10 +331,10 @@ scalePixbuf pb newWidth newHeight = do
   pbnData <- (pixbufGetPixels pbn :: IO (PixbufData Int Word8))
   newRow <- pixbufGetRowstride pbn
   putStrLn ("bytes per row: "++show row++", channels per pixel: "++show chan++
-	    ", bits per sample: "++show bits)
+            ", bits per sample: "++show bits)
   putStrLn ("width: "++show width++", height: "++show height++", newWidth: "++show newWidth++", newHeight: "++show newHeight++" bytes per row new: "++show newRow)
-  
-	    
+
+
   let stepX = (fromIntegral width) / (fromIntegral newWidth) :: Double
   let stepY = (fromIntegral height) / (fromIntegral newHeight) :: Double
 
@@ -366,7 +366,7 @@ arrmove arr src dst size = do
   --putStrLn("arrmove2 "++show src++" "++show dst++" "++show size)
   return ()
 
- 
+
 {-# INLINE arrmovesd #-}
 arrmovesd :: (Ix b, MArray a c IO) => a b c -> a b c -> Int -> Int -> Int -> IO ()
 arrmovesd arrsrc arrdst src dst size = do
@@ -399,26 +399,26 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
   pbnData <- (pixbufGetPixels pbn :: IO (PixbufData Int Word8))
   newRow <- pixbufGetRowstride pbn
   putStrLn ("bytes per row: "++show row++", channels per pixel: "++show chan++
-	    ", bits per sample: "++show bits)
+            ", bits per sample: "++show bits)
   putStrLn ("width: "++show width++", height: "++show height++", newWidth: "++show newWidth++", newHeight: "++show newHeight++" bytes per row new: "++show newRow)
 
   tmpPB <- pixbufCopy pb
   tmpData <- (pixbufGetPixels tmpPB)  :: IO (PixbufData Int Word8)
   ----double gradient
-  
+
   let computeSrcPic pb cnt | cnt <= 0 = do pixbufCopy pb
                            | cnt >  0 = do
                                           pb <- computeSrcPic pb (cnt-1)
                                           gradientPixbuf pb
 
   --computing gradient but one more gradient
-  --will be compute later by gradientArray function                                               
+  --will be compute later by gradientArray function
   tmpPB2 <- computeSrcPic tmpPB (grdCnt-1)
   tmpData2 <- (pixbufGetPixels tmpPB2)  :: IO (PixbufData Int Word8)
 
   -- array to store x coord of removed pixels
-  coordArr <- newArray (0, (max width height)) 0 :: IO (ArrayType Int Int) 
-    
+  coordArr <- newArray (0, (max width height)) 0 :: IO (ArrayType Int Int)
+
   let removeVPixel pixData x y w = do
       --unsafeWrite pixData (0+x*chan+y*row) 255
       --unsafeWrite pixData (1+x*chan+y*row) 255
@@ -426,8 +426,8 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
       --store x-coord of removed pixel
       unsafeWrite coordArr y x
       arrmove pixData ((x+1)*chan+y*row) (x*chan+y*row) ((w-x-1)*chan)
-      return ()  
-  
+      return ()
+
   let removeHPixel pixData x y h = do
       --putStrLn("removeHPixel "++show x++" "++show y++" "++show h)
       --store y-coord of removed pixel
@@ -435,18 +435,18 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
       --putStrLn("removeHPixel1.5 "++show x++" "++show y++" "++show h)
       arrmoven pixData (y*chan+(x+1)*row) (y*chan+x*row) chan row (h-x-1)
       --putStrLn("removeHPixel2 "++show x++" "++show y++" "++show h)
-      return ()  
-      
+      return ()
+
   let removeVGrdPixel grdData x y w = do
       arrmove grdData (x+1+y*width) (x+y*width) (w-x-1)
       return ()
-  
+
   let removeHGrdPixel grdData x y h = do
       --putStrLn("removeHGrdPixel "++show x++" "++show y++" "++show h)
       arrmoven grdData (y+(x+1)*width) (y+x*width) 1 width (h-x-1)
       --putStrLn("removeHGrdPixel2 "++show x++" "++show y++" "++show h)
       return ()
-  
+
   let vPixIndex x y chan row = (x*chan)+(y*row)
   let hPixIndex x y chan row = (y*chan)+(x*row)
 
@@ -460,7 +460,7 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
             v1 <- unsafeRead seamArr (pixIndex x y 1 width)
             v2 <- if x==(w-1) then return 0x7fffffff else unsafeRead seamArr (pixIndex (x+1) y 1 width)
             let nextX | v0 < v1 && v0 < v2 = (x-1)
-                      | v2 < v1            = (x+1) 
+                      | v2 < v1            = (x+1)
                       | True               = x
             removeSeam pixIndex rmPixel rmGrdPixel seamArr grdArr nextX (y-1) w
 
@@ -487,7 +487,7 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
           unsafeWrite grdArr (pixIndex x (y+1) 1 width) g
       updateGradientArray pixIndex grdArr (y-1) w h
       return ()
-      
+
   let findMinVal pixIndex seamArr w h = do
       v <- unsafeRead seamArr (pixIndex 0 (h-1) 1 width)
       xRef <- newIORef (v :: Int, 0 :: Int)
@@ -498,12 +498,12 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
         (mval, m) <- readIORef xRef
         writeIORef xRef (if v < mval then (v, x) else (mval, m))
       (mval, m) <- readIORef xRef
-        
-      putStrLn("w: " ++show w++ " minSeam: " ++ show mval ++ " at: "++show m)      
+
+      putStrLn("w: " ++show w++ " minSeam: " ++ show mval ++ " at: "++show m)
       return m
 
   grdArr <- gradientArray tmpPB2 width height
-  
+
   let removeVSeam w = do
       seamArr <- (computeVSeamArray grdArr width height w)
       m <- findMinVal vPixIndex seamArr w (height-1)
@@ -517,11 +517,11 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
       removeSeam hPixIndex removeHPixel removeHGrdPixel seamArr grdArr m (width-1) h
       updateGradientArray hPixIndex grdArr (width-1) h width
       return ()
-                 
+
   --let nextX | v0 < v1 && v0 < v2 = (x-1)
-  --          | v2 < v1            = (x+1) 
+  --          | v2 < v1            = (x+1)
   --          | True               = x
-      
+
   let grdSeam w h | w > newWidth && h > newHeight = do
                       --putStrLn("grdSeam: "++show w++" "++show h)
                       vSeamArr <- (computeVSeamArray grdArr width height w)
@@ -541,27 +541,27 @@ seamCarvePixbuf pb newWidth newHeight grdCnt = do
                       --putStrLn("grdSeam2: "++show w++" "++show h)
                       removeVSeam w
                       grdSeam (w-1) h
-                      
+
                   | h > newHeight = do
                       --putStrLn("grdSeam3: "++show w++" "++show h)
                       removeHSeam h
                       grdSeam w (h-1)
                   | True = do
                       return ()
-      
+
   -- remove/add seams
   --doFromToDown width (newWidth+1) $ \w -> do
   --  removeVSeam w
-        
+
   --doFromToDown height (newHeight+1) $ \h -> do
   --  removeHSeam h
-  
+
   grdSeam width height
-        
-      
+
+
   doFromTo 0 (newHeight-1) $ \y -> do
     arrmovesd tmpData pbnData (y*row) (y*newRow) newRow
-      
+
   return pbn
 
 -- compute the gradient map
@@ -577,12 +577,12 @@ gradientPixbuf pb = do
   pbnData <- (pixbufGetPixels pbn :: IO (PixbufData Int Word8))
   putStrLn ("bytes per row: "++show row++", channels per pixel: "++show chan++", bits per sample: "++show bits)
   putStrLn ("width: "++show width++", height: "++show height)
-	
+
   let getpix x y c = do
       case (x < 1 || x >= width || y < 1 || y >= height) of
         True -> return 0
         False -> (unsafeRead pbData (c+x*chan+y*row))
-      
+
   let gradient x y c = do
       let convM = liftM fromIntegral
           blah a b = convM (getpix a b c)
@@ -594,7 +594,7 @@ gradientPixbuf pb = do
       v02 <- blah (x-1) (y+1)
       v12 <- blah x (y+1)
       v22 <- blah (x+1) (y+1)
-      
+
       let gx = abs ((v20-v00)+2*(v21-v01)+(v22-v02))
       let gy = abs ((v02-v00)+2*(v12-v10)+(v22-v20))
       let g = (gx + gy)::Int
@@ -608,7 +608,7 @@ gradientPixbuf pb = do
       bg <- gradient x y 2
       let g = rg + gg + bg
       return ((fromIntegral g)::Word8)
-  
+
 
   doFromTo 0 (height-1) $ \y -> do
     let offY = y*row
@@ -626,7 +626,7 @@ gradientPixbuf pb = do
 {-# INLINE pixelGradient #-}
 pixelGradient :: (Int -> Int -> Int -> Int -> Int) -> (PixbufData Int Word8) -> Int ->  Int -> Int ->  Int -> Int -> Int -> (IO Word16)
 pixelGradient pixIndex pbData row chan w h x y = do
-	
+
   let getpix x y c = do
       case (x < 0 || x >= w || y < 0 || y >= h) of
         True -> return 0
@@ -644,15 +644,15 @@ pixelGradient pixIndex pbData row chan w h x y = do
       v02 <- blah (x-1) (y+1)
       v12 <- blah x (y+1)
       v22 <- blah (x+1) (y+1)
-      
+
       let gx = abs ((v20-v00)+2*(v21-v01)+(v22-v02))
       let gy = abs ((v02-v00)+2*(v12-v10)+(v22-v20))
       let g = (gx + gy)::Int
       --let g8 = (shiftR g 3)
       let g8 = if g > 255 then 255 else g
       return (fromIntegral(g8) :: Word8)
-        
-              
+
+
   let gradient x y c = do
       let convM = liftM fromIntegral
           blah a b = convM (getpix a b c)
@@ -675,7 +675,7 @@ pixelGradient pixIndex pbData row chan w h x y = do
   let g = rg + gg + bg
   return ((fromIntegral g) :: Word16)
 
-  
+
 -- compute the gradient map
 gradientArray :: Pixbuf -> Int ->  Int -> IO (ArrayType Int Word16)
 gradientArray pb w h = do
@@ -690,7 +690,7 @@ gradientArray pb w h = do
   putStrLn ("width: "++show width++", height: "++show height)
 
   let vPixIndex x y chan row = x*chan+y*row
-  
+
   doFromTo 0 (h-1) $ \y -> do
     let offY = y*width
     doFromTo 0 (w-1) $ \x -> do
@@ -703,14 +703,14 @@ gradientArray pb w h = do
 
 computeVSeamArray :: (ArrayType Int Word16) -> Int -> Int -> Int -> IO (ArrayType Int Int)
 computeVSeamArray grdArr  width height currentWidth = do
-  
+
   seamArr <- newArray (0, width * height) 0
   --grdArr <- gradientArr
-  
+
   doFromTo 0 (currentWidth-1) $ \x -> do
     v <- unsafeRead grdArr x
     unsafeWrite seamArr x (fromIntegral v :: Int)
-    
+
   doFromTo 1 (height-1) $ \y -> do
     let offY = y*width
     let prevOffY = offY-width
@@ -728,19 +728,19 @@ computeVSeamArray grdArr  width height currentWidth = do
     p2r <- unsafeRead seamArr (currentWidth-1+prevOffY)
     vr <- unsafeRead grdArr (currentWidth-1+offY)
     unsafeWrite seamArr (currentWidth-1+offY) ((fromIntegral vr :: Int) +(min p1r p2r))
-    
+
   return seamArr
 
 computeHSeamArray :: (ArrayType Int Word16) -> Int -> Int -> Int -> IO (ArrayType Int Int)
 computeHSeamArray grdArr  width height currentHeight = do
-  
+
   seamArr <- newArray (0, width * height) 0
   --grdArr <- gradientArr
-  
+
   doFromTo 0 (currentHeight-1) $ \y -> do
     v <- unsafeRead grdArr (y*width)
     unsafeWrite seamArr (y*width) (fromIntegral v :: Int)
-    
+
   doFromTo 1 (width-1) $ \x -> do
     doFromTo 1 (currentHeight-2) $ \y -> do
       let offY = y*width
@@ -759,5 +759,5 @@ computeHSeamArray grdArr  width height currentHeight = do
     p2r <- unsafeRead seamArr (x-1+((currentHeight-1)*width))
     vr <- unsafeRead grdArr (x+((currentHeight-1)*width))
     unsafeWrite seamArr (x+((currentHeight-1)*width)) ((fromIntegral vr :: Int) +(min p1r p2r))
-    
+
   return seamArr

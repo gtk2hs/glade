@@ -32,26 +32,26 @@ empty =  replicate size (replicate size Blank)
 
 move       :: Int -> Player -> Board -> Maybe Board
 move n p b = case y of
-	       Blank     -> Just (chop size (xs ++ (p : ys)))
-	       _         -> Nothing
-	       where
+               Blank     -> Just (chop size (xs ++ (p : ys)))
+               _         -> Nothing
+               where
                  (xs,y:ys) = splitAt n (concat b)
 
 chop      :: Int -> [a] -> [[a]]
 chop n [] =  []
 chop n xs =  take n xs : chop n (drop n xs)
 
-diag 	 :: [[a]] -> [a]
+diag     :: [[a]] -> [a]
 diag xss =  [xss !! n !! n | n <- [0 .. length xss - 1]]
 
 full   :: Board -> Bool
 full b =  all (all (/= Blank)) b
 
-wins	 :: Player -> Board -> Bool
+wins     :: Player -> Board -> Bool
 wins p b =  any (all (== p)) b
-	    || any (all (== p)) (transpose b)
-	    || all (== p) (diag b)
-	    || all (== p) (diag (reverse b))
+            || any (all (== p)) (transpose b)
+            || all (== p) (diag b)
+            || all (== p) (diag (reverse b))
 
 won   :: Board -> Bool
 won b =  wins Nought b || wins Cross b

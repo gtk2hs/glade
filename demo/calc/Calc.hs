@@ -9,18 +9,18 @@ import qualified CalcModel as Calc
 
 main = do
   initGUI
-	 
+
   -- load up the glade file
   calcXmlM <- xmlNew "calc.glade"
   let calcXml = case calcXmlM of
                   (Just calcXml) -> calcXml
                   Nothing -> error "can't find the glade file \"calc.glade\" \
                                    \in the current directory"
-	 
+
    -- get a handle on a some widgets from the glade file
   window <- xmlGetWidget calcXml castToWindow "calcwindow"
   display <- xmlGetWidget calcXml castToLabel "display"
-  
+
   -- a list of the names of the buttons and the actions associated with them
   let buttonNamesAndOperations = numbericButtons ++ otherButtons
       numbericButtons = [ ("num-" ++ show n, Calc.enterDigit n)
@@ -33,7 +33,7 @@ main = do
         ,("op-divide", Calc.enterBinOp Calc.divide)
         ,("equals", Calc.evaluate)
         ,("clear", \_ -> Just ("0", Calc.clearCalc))]
-  
+
   -- action to do when a button corresponding to a calculator operation gets
   -- pressed: we update the calculator state and display the new result.
   -- These calculator operations can return Nothing for when the operation
@@ -52,13 +52,13 @@ main = do
       connectButtonToOperation name operation = do
         button <- xmlGetWidget calcXml castToButton name
         button `onClicked` calcOperation operation
-  
+
   -- connect up all the buttons with their actions.
   mapM_ (uncurry connectButtonToOperation) buttonNamesAndOperations
-  
+
   -- make the program exit when the main window is closed
   window `onDestroy` mainQuit
- 
+
   -- show everything and run the main loop
   widgetShowAll window
   mainGUI

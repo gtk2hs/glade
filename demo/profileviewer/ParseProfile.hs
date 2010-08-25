@@ -88,7 +88,7 @@ parseProfileEntry line =
             eindividualTime  = floor $ (read individualTime) * 10,
             eindividualAlloc = floor $ (read individualAlloc) * 10,
             einheritedTime  = floor $ (read inheritedTime) * 10,
-            einheritedAlloc = floor $ (read inheritedAlloc) * 10 
+            einheritedAlloc = floor $ (read inheritedAlloc) * 10
           }
         _ -> error $ "bad profile line:\n\t" ++ line
 

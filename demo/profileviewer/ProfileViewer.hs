@@ -4,7 +4,7 @@
 
 -- This is a slightly larger demo that combines use of glade, the file chooser
 -- dialog, program state (IORefs) and use of the mogul tree view wrapper
--- interface. 
+-- interface.
 
 -- The program is a simple viewer for the log files that ghc produces when you
 -- do time profiling. The parser is not very clever so loading large files can
@@ -33,7 +33,7 @@ main = do
   -- our global state
   thresholdVar <- newIORef 0        --current cuttoff/threshhold value
   profileVar <- newIORef Nothing    --holds the current profile data structure
-  
+
   -- initialisation stuff
   initGUI
 
@@ -49,7 +49,7 @@ main = do
   commandLabel <- xmlGetWidget dialogXml castToLabel "commandLabel"
   totalTimeLabel <- xmlGetWidget dialogXml castToLabel "totalTimeLabel"
   totalAllocLabel <- xmlGetWidget dialogXml castToLabel "totalAllocLabel"
-  
+
   -- create the tree model
   store <- New.treeStoreNew []
   New.treeViewSetModel mainView store
@@ -74,7 +74,7 @@ main = do
 
   -- this action clears the tree model and then populates it with the
   -- profile contained in the profileVar, taking into account the current
-  -- threshold value kept in the thresholdVar 
+  -- threshold value kept in the thresholdVar
   let repopulateTreeStore = do
         profile <- readIORef profileVar
         maybe (return ()) repopulateTreeStore' profile
@@ -86,8 +86,8 @@ main = do
         commandLabel `labelSetText` (command profile)
         totalTimeLabel `labelSetText` (show (totalTime profile) ++ " sec")
         totalAllocLabel `labelSetText` (formatNumber (totalAlloc profile) ++ " bytes")
-        
-	threshold <- readIORef thresholdVar
+
+        threshold <- readIORef thresholdVar
         let node = if threshold > 0
                      then pruneOnThreshold threshold (breakdown profile)
                      else Just (breakdown profile)
@@ -98,7 +98,7 @@ main = do
           Just node -> New.treeStoreInsertTree store [] 0 (toTree node)
 
   -- associate actions with the menus
-  
+
   -- the open menu item, opens a file dialog and then loads and displays
   -- the the profile (unless the user cancleled the dialog)
   openMenuItem <- xmlGetWidget dialogXml castToMenuItem "openMenuItem"
@@ -106,21 +106,21 @@ main = do
     filename <- openFileDialog mainWindow
     when (isJust filename)
          (do profile <- parseProfileFile (fromJust filename)
-	     writeIORef profileVar (Just profile)
+             writeIORef profileVar (Just profile)
              repopulateTreeStore)
 
   quitMenuItem <- xmlGetWidget dialogXml castToMenuItem "quitMenuItem"
   quitMenuItem `onActivateLeaf` mainQuit
-  
+
   aboutMenuItem <- xmlGetWidget dialogXml castToMenuItem "aboutMenuItem"
   aboutMenuItem `onActivateLeaf` showAboutDialog mainWindow
-  
+
   -- each menu item in the "View" menu sets the thresholdVar and re-displays
   -- the current profile
   let doThresholdMenuItem threshold itemName = do
         menuItem <- xmlGetWidget dialogXml castToMenuItem itemName
         menuItem `onActivateLeaf` do writeIORef thresholdVar threshold
-	                             repopulateTreeStore
+                                     repopulateTreeStore
   mapM_ (uncurry doThresholdMenuItem)
     [(0, "allEntries"), (1, "0.1%Entries"), (5, "0.5%Entries"), (10, "1%Entries"),
      (50, "5%Entries"), (100, "10%Entries"), (500, "50%Entries")]
@@ -143,9 +143,9 @@ openFileDialog parentWindow = do
   dialog <- fileChooserDialogNew
               (Just "Open Profile... ")
               (Just parentWindow)
-	      FileChooserActionOpen
-	      [("gtk-cancel", ResponseCancel)
-	      ,("gtk-open", ResponseAccept)]
+              FileChooserActionOpen
+              [("gtk-cancel", ResponseCancel)
+              ,("gtk-open", ResponseAccept)]
   widgetShow dialog
   response <- dialogRun dialog
   widgetHide dialog

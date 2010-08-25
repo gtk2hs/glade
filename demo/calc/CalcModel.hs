@@ -86,7 +86,7 @@ enterBinOp binop calc =
             })
 
 evaluate :: Calc -> Maybe (String, Calc)
-evaluate calc = 
+evaluate calc =
   let newTotal = (case operator calc of BinOp op -> op)
                    (total calc)
                    (digitsToNumber (number calc))
@@ -126,7 +126,7 @@ showNumber num =
 testProg :: IO ()
 testProg = do
   evalLoop clearCalc
-  
+
   where evalLoop :: Calc -> IO ()
         evalLoop calc = do
           putStr "calc> "
@@ -134,7 +134,7 @@ testProg = do
           when (line /= "q") $ do
             result <- case line of
                         [digit] | isDigit digit
-                            -> return $ enterDigit (read [digit]) calc 
+                            -> return $ enterDigit (read [digit]) calc
                         "." -> return $ enterDecimalPoint calc
                         "+" -> return $ enterBinOp plus calc
                         "-" -> return $ enterBinOp minus calc
