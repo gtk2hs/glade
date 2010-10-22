@@ -61,7 +61,7 @@ import Control.Exception (evaluate)
 import System.Glib.FFI
 import System.Glib.GType
 import Graphics.UI.Gtk.Abstract.Object   (makeNewObject)
-import System.Glib.GObject  (constructNewGObject)
+import System.Glib.GObject  (wrapNewGObject)
 {#import Graphics.UI.Gtk.Glade.Types#}
 import System.Glib.GList
 
@@ -79,7 +79,7 @@ xmlNew file =
   withCString file                $ \strPtr1 -> do
   xmlPtr <- {#call unsafe xml_new#} strPtr1 nullPtr nullPtr
   if xmlPtr==nullPtr then return Nothing
-                     else liftM Just $ constructNewGObject mkGladeXML (return xmlPtr)
+                     else liftM Just $ wrapNewGObject mkGladeXML (return xmlPtr)
 
 -- | Create a new GladeXML object (and the corresponding widgets) from the
 -- given XML file.
@@ -100,7 +100,7 @@ xmlNewWithRootAndDomain ::
                   -- 'Nothing' for default)
  -> IO (Maybe GladeXML)
 xmlNewWithRootAndDomain file rootWidgetName domain =
-  maybeNull (constructNewGObject mkGladeXML) $
+  maybeNull (wrapNewGObject mkGladeXML) $
   withCString file $ \filePtr ->
   maybeWith withCString rootWidgetName $ \rootWidgetNamePtr ->
   maybeWith withCString domain $ \domainPtr ->
