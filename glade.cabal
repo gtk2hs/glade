@@ -6,7 +6,7 @@ Copyright:      (c) 2001-2010 The Gtk2Hs Team
 Author:         Manuel M T Chakravarty
 Maintainer:     gtk2hs-users@sourceforge.net
 Build-Type:     Custom
-Cabal-Version:  >= 1.6.0
+Cabal-Version:  >= 1.8
 Stability:      provisional
 homepage:       http://www.haskell.org/gtk2hs/
 bug-reports:    http://hackage.haskell.org/trac/gtk2hs/
@@ -17,7 +17,7 @@ Description:    This library allows to load externally stored user interfaces in
 
 Category:       Graphics
 Tested-With:    GHC == 6.12.1
-Extra-Source-Files: Gtk2HsSetup.hs
+Extra-Source-Files: SetupWrapper.hs SetupMain.hs Gtk2HsSetup.hs
 					hierarchy.list
 
 x-Types-File:       Graphics/UI/Gtk/Glade/Types.chs
