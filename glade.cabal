@@ -14,6 +14,10 @@ Synopsis:       Binding to the glade library.
 Description:    This library allows to load externally stored user interfaces into
                 programs. This allows alteration of the interface without recompilation
                 of the program.
+                .
+                Note that this functionality is now provided in gtk directly
+                (as of version 2.12 of the gtk+ C lib) by the
+                Graphics.UI.Gtk.Builder module.
 
 Category:       Graphics
 Tested-With:    GHC == 6.12.1
