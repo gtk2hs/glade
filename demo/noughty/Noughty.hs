@@ -5,9 +5,9 @@
 
 -- Imports
 
-import IO
-import Maybe
-import List
+import System.IO
+import Data.Maybe
+import Data.List
 import Graphics.UI.Gtk hiding (Cross)
 import Data.IORef
 import Control.Monad

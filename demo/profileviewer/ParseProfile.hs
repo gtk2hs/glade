@@ -11,8 +11,8 @@ module ParseProfile (
   pruneOnThreshold
 ) where
 
-import Char
-import Maybe (catMaybes)
+import Data.Char
+import Data.Maybe (catMaybes)
 
 data Profile = Profile {
     title :: String,

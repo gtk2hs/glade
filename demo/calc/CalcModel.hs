@@ -7,8 +7,8 @@ module CalcModel (
   clearCalc, enterDigit, enterDecimalPoint, enterBinOp, evaluate
   ) where
 
-import Char     (isDigit)
-import Monad    (when)
+import Data.Char     (isDigit)
+import Control.Monad    (when)
 import Numeric  (showGFloat)
 
 -- we could change this to rational
