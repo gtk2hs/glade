@@ -67,8 +67,8 @@ Source-Repository head
 
 Library
         build-depends:  base >= 4 && < 5,
-                        glib >= 0.12.5.0 && < 0.13, 
-                        gtk >= 0.12.5.0 && < 0.13
+                        glib >= 0.12.5.0 && < 0.14, 
+                        gtk >= 0.12.5.0 && < 0.14
 						
         build-tools:    gtk2hsC2hs >= 0.13.9,
                         gtk2hsHookGenerator, gtk2hsTypeGen
