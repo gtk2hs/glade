@@ -6,9 +6,9 @@
 
 -- | Build a Gtk2hs package.
 --
-module Gtk2HsSetup ( 
-  gtk2hsUserHooks, 
-  getPkgConfigPackages, 
+module Gtk2HsSetup (
+  gtk2hsUserHooks,
+  getPkgConfigPackages,
   checkGtk2hsBuildtools,
   typeGenProgram,
   signalGenProgram,
@@ -121,7 +121,7 @@ fixLibs dlls = concatMap $ \ lib ->
             Just ('.':_)                -> True
             Just ('-':n:_) | isNumber n -> True
             _                           -> False
-        
+
 -- The following code is a big copy-and-paste job from the sources of
 -- Cabal 1.8 just to be able to fix a field in the package file. Yuck.
 
@@ -157,9 +157,12 @@ register :: PackageDescription -> LocalBuildInfo
 register pkg@(library       -> Just lib )
          lbi@(libraryConfig -> Just clbi) regFlags
   = do
-
     installedPkgInfoRaw <- generateRegistrationInfo
+#if CABAL_VERSION_CHECK(1,22,0)
+                           verbosity pkg lib lbi clbi inplace False distPref packageDb
+#else
                            verbosity pkg lib lbi clbi inplace distPref
+#endif
 
     dllsInScope <- getSearchPath >>= (filterM doesDirectoryExist) >>= getDlls
     let libs = fixLibs dllsInScope (extraLibraries installedPkgInfoRaw)
@@ -262,11 +265,11 @@ installCHI pkg@PD.PackageDescription { library = Just lib } lbi verbosity copyde
   -- a modules that does not have a .chi file
   mFiles <- mapM (findFileWithExtension' ["chi"] [buildDir lbi] . toFilePath)
                    (PD.libModules lib)
-                 
+
   let files = [ f | Just f <- mFiles ]
   installOrdinaryFiles verbosity libPref files
 
-  
+
 installCHI _ _ _ _ = return ()
 
 ------------------------------------------------------------------------------
@@ -394,19 +397,14 @@ fixDeps pd@PD.PackageDescription {
   mOthFiles <- mapM findModule othMods
 
   -- tag all exposed files with True so we throw an error if we need to build
-  -- an exposed module before an internal modules (we cannot express this)
+  --- an exposed module before an internal modules (we cannot express this)
   let modDeps = zipWith (ModDep True []) expMods mExpFiles++
                 zipWith (ModDep False []) othMods mOthFiles
   modDeps <- mapM extractDeps modDeps
-  let (expMods, othMods) = span mdExposed $ sortTopological modDeps
-      badOther = map (fromMaybe "<no file>" . mdLocation) $
-                 filter (not . mdExposed) expMods
-  unless (null badOther) $
-    die ("internal chs modules "++intercalate "," badOther++
-         " depend on exposed chs modules; cabal needs to build internal modules first")
+  let (othMods, expMods) = span (not . mdExposed) $ reverse $ sortTopological modDeps
   return pd { PD.library = Just lib {
-    PD.exposedModules = map mdOriginal expMods,
-    PD.libBuildInfo = bi { PD.otherModules = map mdOriginal othMods }
+    PD.exposedModules = map mdOriginal (reverse expMods),
+    PD.libBuildInfo = bi { PD.otherModules = map mdOriginal (reverse othMods) }
   }}
 
 data ModDep = ModDep {
@@ -426,14 +424,14 @@ instance Ord ModDep where
 
 -- Extract the dependencies of this file. This is intentionally rather naive as it
 -- ignores CPP conditionals. We just require everything which means that the
--- existance of a .chs module may not depend on some CPP condition.  
+-- existance of a .chs module may not depend on some CPP condition.
 extractDeps :: ModDep -> IO ModDep
 extractDeps md@ModDep { mdLocation = Nothing } = return md
 extractDeps md@ModDep { mdLocation = Just f } = withUTF8FileContents f $ \con -> do
   let findImports acc (('{':'#':xs):xxs) = case (dropWhile (' ' ==) xs) of
         ('i':'m':'p':'o':'r':'t':' ':ys) ->
           case simpleParse (takeWhile ('#' /=) ys) of
-            Just m -> findImports (m:acc) xxs 
+            Just m -> findImports (m:acc) xxs
             Nothing -> die ("cannot parse chs import in "++f++":\n"++
                             "offending line is {#"++xs)
          -- no more imports after the first non-import hook
@@ -467,8 +465,8 @@ checkGtk2hsBuildtools programs = do
                          return (programName prog, location)
                       ) programs
   let printError name = do
-        putStrLn $ "Cannot find " ++ name ++ "\n" 
+        putStrLn $ "Cannot find " ++ name ++ "\n"
                  ++ "Please install `gtk2hs-buildtools` first and check that the install directory is in your PATH (e.g. HOME/.cabal/bin)."
         exitFailure
   forM_ programInfos $ \ (name, location) ->
-    when (isNothing location) (printError name) 
+    when (isNothing location) (printError name)
