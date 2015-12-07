@@ -1,5 +1,5 @@
 Name:           glade
-Version:        0.12.5.0
+Version:        0.12.5.1
 License:        LGPL-2.1
 License-file:   COPYING
 Copyright:      (c) 2001-2010 The Gtk2Hs Team
@@ -35,11 +35,11 @@ Data-Files:		calc/calc.glade
                 calc/Calc.hs
                 calc/CalcModel.hs
                 calc/Makefile
-                
+
                 glade/GladeTest.hs
                 glade/Makefile
                 glade/simple.glade
-                
+
                 noughty/Cross.png
                 noughty/License
                 noughty/Makefile
@@ -47,13 +47,13 @@ Data-Files:		calc/calc.glade
                 noughty/noughty.glade
                 noughty/NoughtyGlade.hs
                 noughty/Noughty.hs
-                
+
                 profileviewer/Makefile
                 profileviewer/ParseProfile.hs
                 profileviewer/ProfileViewer.glade
                 profileviewer/ProfileViewer.gladep
                 profileviewer/ProfileViewer.hs
-                
+
                 scaling/London_Eye.jpg
                 scaling/Makefile
                 scaling/Mountains.jpg
@@ -67,19 +67,19 @@ Source-Repository head
 
 Library
         build-depends:  base >= 4 && < 5,
-                        glib >= 0.12.5.0 && < 0.13, 
-                        gtk >= 0.12.5.0 && < 0.13
-						
+                        glib >= 0.12.5.0 && < 0.14,
+                        gtk >= 0.12.5.0 && < 0.14
+
         build-tools:    gtk2hsC2hs >= 0.13.9,
                         gtk2hsHookGenerator, gtk2hsTypeGen
-						
+
         exposed-modules:
           Graphics.UI.Gtk.Glade
         other-modules:
-          Graphics.UI.Gtk.Glade.Types		  
+          Graphics.UI.Gtk.Glade.Types
 
         extensions:     ForeignFunctionInterface
-		
+
         x-c2hs-Header:  glade/glade.h
         x-Types-Tag: libglade
         pkgconfig-depends: libglade-2.0 >= 2.0.0
