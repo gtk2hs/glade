@@ -7,4 +7,6 @@ install:
   - cabal install alex happy
   - cabal install gtk2hs-buildtools
 script:
+  - type -all cabal
+  - cabal --version
   - cabal install
