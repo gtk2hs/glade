@@ -4,9 +4,7 @@ before_install:
   - sudo apt-get --no-install-recommends install -qq libglade2-dev
 install:
   - travis_retry cabal update
-  - cabal install alex happy
+  - cabal install alex happy Cabal-1.18.0
   - cabal install gtk2hs-buildtools
 script:
-  - type -all cabal
-  - cabal --version
   - cabal install
