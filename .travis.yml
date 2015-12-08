@@ -1,10 +1,10 @@
 language: haskell
+ghc: 7.8
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get --no-install-recommends install -qq zlib1g-dev libncurses-dev libcairo2-dev libglib2.0-dev libpango1.0-dev libgtk2.0-dev libglade2-dev alex happy
+  - sudo apt-get --no-install-recommends install -qq libglade2-dev alex happy
 install:
   - travis_retry cabal update
   - cabal install gtk2hs-buildtools
 script:
   - cabal install
-  - cat /home/travis/.cabal/logs/glib-0.13.2.1.log
