@@ -1,12 +1,12 @@
 Name:           glade
-Version:        0.13.0
+Version:        0.13.1
 License:        LGPL-2.1
 License-file:   COPYING
-Copyright:      (c) 2001-2010 The Gtk2Hs Team
+Copyright:      (c) 2001-2010 The Gtk2Hs Team, 2016 C Maeder
 Author:         Manuel M T Chakravarty, Duncan Coutts
-Maintainer:     gtk2hs-users@sourceforge.net
+Maintainer:     chr.maeder@web.de
 Build-Type:     Custom
-Cabal-Version:  >= 1.8
+Cabal-Version:  >= 1.24
 Stability:      provisional
 homepage:       http://projects.haskell.org/gtk2hs/
 bug-reports:    http://hackage.haskell.org/trac/gtk2hs/
@@ -20,9 +20,8 @@ Description:    This library allows to load externally stored user interfaces in
                 Graphics.UI.Gtk.Builder module.
 
 Category:       Graphics
-Tested-With:    GHC == 6.10.4, GHC == 6.12.3, GHC == 7.0.4, GHC == 7.2.1
-Extra-Source-Files: SetupWrapper.hs SetupMain.hs Gtk2HsSetup.hs
-					hierarchy.list
+Tested-With:    GHC == 7.10.3 GHC == 8.0.1
+Extra-Source-Files: hierarchy.list
 
 x-Types-File:       Graphics/UI/Gtk/Glade/Types.chs
 x-Types-ModName:    Graphics.UI.Gtk.Glade.Types
@@ -63,23 +62,26 @@ Data-Files:		calc/calc.glade
 
 Source-Repository head
   type:         git
-  location:     https://github.com/gtk2hs/glade
+  location:     https://github.com/cmaeder/glade
+
+custom-setup
+  setup-depends: base >= 4.6,
+                 Cabal >= 1.24 && < 1.25,
+                 gtk2hs-buildtools >= 0.13.2.0 && < 0.14
 
 Library
         build-depends:  base >= 4 && < 5,
-                        glib >= 0.13.2 && < 0.14,
-                        gtk >= 0.13.9 && < 0.14
-
-        build-tools:    gtk2hsC2hs >= 0.13.9,
-                        gtk2hsHookGenerator, gtk2hsTypeGen
+                        glib >= 0.13.4 && < 0.14,
+                        gtk >= 0.14.5 && < 0.15
 
         exposed-modules:
           Graphics.UI.Gtk.Glade
         other-modules:
           Graphics.UI.Gtk.Glade.Types
 
-        extensions:     ForeignFunctionInterface
+        default-language: Haskell98
+        default-extensions: ForeignFunctionInterface
 
-        x-c2hs-Header:  glade/glade.h
+        x-c2hs-Header: glade/glade.h
         x-Types-Tag: libglade
         pkgconfig-depends: libglade-2.0 >= 2.0.0
