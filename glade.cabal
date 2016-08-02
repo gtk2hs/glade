@@ -1,5 +1,5 @@
 Name:           glade
-Version:        0.14.0
+Version:        0.13.1
 License:        LGPL-2.1
 License-file:   COPYING
 Copyright:      (c) 2001-2010 The Gtk2Hs Team, 2016 C Maeder
@@ -79,8 +79,9 @@ Library
         other-modules:
           Graphics.UI.Gtk.Glade.Types
 
-        extensions:     ForeignFunctionInterface
+        default-language: Haskell98
+        default-extensions: ForeignFunctionInterface
 
-        x-c2hs-Header:  glade/glade.h
+        x-c2hs-Header: glade/glade.h
         x-Types-Tag: libglade
         pkgconfig-depends: libglade-2.0 >= 2.0.0
