@@ -9,7 +9,7 @@ Build-Type:     Custom
 Cabal-Version:  >= 1.24
 Stability:      provisional
 homepage:       http://projects.haskell.org/gtk2hs/
-bug-reports:    http://hackage.haskell.org/trac/gtk2hs/
+bug-reports:    https://github.com/gtk2hs/glade/issues
 Synopsis:       Binding to the glade library.
 Description:    This library allows to load externally stored user interfaces into
                 programs. This allows alteration of the interface without recompilation
@@ -62,7 +62,7 @@ Data-Files:		calc/calc.glade
 
 Source-Repository head
   type:         git
-  location:     https://github.com/cmaeder/glade
+  location:     https://github.com/gtk2hs/glade
 
 custom-setup
   setup-depends: base >= 4.6,
@@ -81,6 +81,9 @@ Library
 
         default-language: Haskell98
         default-extensions: ForeignFunctionInterface
+
+        if os(darwin)
+          cpp-options: -U__BLOCKS__ -D__attribute__(A)= -D_Nullable= -D_Nonnull=
 
         x-c2hs-Header: glade/glade.h
         x-Types-Tag: libglade
